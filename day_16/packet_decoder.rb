@@ -24,7 +24,7 @@ class PacketDecoder
 
   def initialize
     @versions = []
-    packet = IO.read("sample6.txt")
+    packet = IO.read("input.txt")
     puts "Packet: #{packet}"
     unless packet.match(/[2-9A-F]/).nil?
       packet = hex_to_binary(packet)
@@ -51,6 +51,7 @@ class PacketDecoder
       if length_type_id(packet) == '0'
         sub_length = sub_length(packet)
         start_length = packet.length
+        return if sub_length == 0
         while( packet.length >= start_length - sub_length )
 #          puts "Packet length: #{packet.length}; Start length: #{start_length}; Sub length: #{sub_length}"
 #          puts "Remaining packet: #{packet}"
