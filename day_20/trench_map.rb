@@ -5,7 +5,7 @@ class TrenchMap
   attr_accessor :result_images
 
   def initialize
-    input = IO.read('sample.txt')
+    input = IO.read('input.txt')
     @input_image = input.split("\n")
     @algorithm = @input_image.shift  # first line is the algorithm
     @input_image.shift # delete blank line
@@ -17,10 +17,10 @@ class TrenchMap
   end
 
   def surround_with_dots(input_image)
-    # the example adds padding of 5 rows of dots, so try that
+    # add a padding of 10 rows of dots
     dot_row = '.' * input_image[0].size
-    dot_column = '.' * 5 
-    5.times do |i|
+    dot_column = '.' * 10
+    10.times do |i|
       input_image.unshift(dot_row)
       input_image.push(dot_row)
     end
@@ -42,7 +42,51 @@ class TrenchMap
         result_image[y-1][x-1] = @algorithm[decimal]
       end
     end
+
+    account_for_infinite_images(result_image)
     result_image
+  end
+
+  # infinite size means all extra space around the image starts as:
+  # ...
+  # ...
+  # ...
+  # and if the first element of the algorithm, which is 000000000 = '.........', is '#',
+  # that means in the first round of image enhancing, all infinite space turns into '#'s.
+  # On the second round, it starts as
+  # ###
+  # ###
+  # ###
+  # which is '#########' = 111111111 = 511 in decimal, so look up the algorithm at [511]
+  def account_for_infinite_images(image)
+    width = image[0].size
+    height = image.size
+
+    if (@algorithm[0] == '#' && image[2][2] == '#') || (@algorithm[511] == '#' && image[2][2] == '#')
+      image.each do |row|
+        row[0] = '#'
+        row[1] = '#'
+        row[height-2] = '#'
+        row[height-1] = '#'
+      end
+      hash_row = '#' * width
+      image[0] = hash_row 
+      image[1] = hash_row 
+      image[height-2] = hash_row
+      image[height-1] = hash_row
+    elsif (@algorithm[0] == '.' && image[2][2] == '.') || (@algorithm[511] == '.' && image[2][2] == '.')
+      image.each do |row|
+        row[0] = '.'
+        row[1] = '.'
+        row[height-2] = '.'
+        row[height-1] = '.'
+      end
+      hash_row = '.' * width
+      image[0] = hash_row 
+      image[1] = hash_row 
+      image[height-2] = hash_row
+      image[height-1] = hash_row
+    end
   end
 
   def to_decimal(binary)
