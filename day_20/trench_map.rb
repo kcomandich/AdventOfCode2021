@@ -11,9 +11,12 @@ class TrenchMap
     @input_image.shift # delete blank line
 
     @result_images = []
-    surround_with_dots(@input_image)
-    @result_images[0] = enhance_image(@input_image)
-    @result_images[1] = enhance_image(@result_images[0])
+    image = surround_with_dots(@input_image).clone.map(&:clone)
+    2.times do |i|
+      result = enhance_image(image)
+      image = result
+      @result_images << result 
+    end
   end
 
   def surround_with_dots(input_image)
