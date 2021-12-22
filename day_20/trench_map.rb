@@ -12,7 +12,7 @@ class TrenchMap
 
     @result_images = []
     image = surround_with_dots(@input_image).clone.map(&:clone)
-    2.times do |i|
+    50.times do |i|
       result = enhance_image(image)
       image = result
       @result_images << result 
@@ -20,10 +20,10 @@ class TrenchMap
   end
 
   def surround_with_dots(input_image)
-    # add a padding of 10 rows of dots
+    # add a padding of 120 rows of dots
     dot_row = '.' * input_image[0].size
-    dot_column = '.' * 10
-    10.times do |i|
+    dot_column = '.' * 120
+    120.times do |i|
       input_image.unshift(dot_row)
       input_image.push(dot_row)
     end
@@ -107,13 +107,11 @@ end
 
 if $PROGRAM_NAME == __FILE__
   tm = TrenchMap.new
-  puts "Image Enhancement Algorith: \n"
+  puts "Image Enhancement Algorithm: \n"
   puts tm.algorithm
   puts "\nInput Image:"
   tm.input_image.each{|line| puts line}
-  tm.result_images.each do |image|
-    puts "\nResult Image:"
-    puts image
-  end
-  puts "Number of lit pixels in final image: #{tm.number_of_lit_pixels(tm.result_images[1])}"
+  puts "\nResult Image:"
+  tm.result_images.last.each{|line| puts line}
+  puts "Number of lit pixels in final image: #{tm.number_of_lit_pixels(tm.result_images.last)}"
 end
