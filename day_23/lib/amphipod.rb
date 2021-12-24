@@ -1,0 +1,2 @@
+module Amphipod
+end
